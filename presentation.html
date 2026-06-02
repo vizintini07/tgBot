@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кинотавр - Презентация проекта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-hero {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        section {
+            padding: 80px 20px;
+        }
+
+        section:nth-child(even) {
+            background: white;
+        }
+
+        h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1d1d1f;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #6e6e73;
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+
+        .feature-card p {
+            color: #6e6e73;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .screenshot-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .screenshot-mockup {
+            width: 100%;
+            max-width: 300px;
+            height: 500px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mockup-content {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mockup-header {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .mockup-body {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mock-message {
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            max-width: 80%;
+        }
+
+        .mock-message.user {
+            background: #e8e8e8;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .mock-message.bot {
+            background: rgba(102, 126, 234, 0.15);
+            border-bottom-left-radius: 4px;
+        }
+
+        .screenshot-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+
+        .screenshot-card p {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .tech-item strong {
+            display: block;
+            font-size: 18px;
+            color: #1d1d1f;
+            margin-bottom: 5px;
+        }
+
+        .tech-item span {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Logo Variants */
+        .logo-variants {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .logo-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .logo-preview {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+
+        .logo-card p {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta h2 {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #1d1d1f;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <img src="miniapp/static/logo.svg" alt="Кинотавр" class="logo-hero">
+            <h1>Кинотавр</h1>
+            <p>Умный Telegram бот для подбора фильмов по настроению с современным Mini App интерфейсом</p>
+        </div>
+    </div>
+
+    <!-- О проекте -->
+    <section>
+        <div class="container">
+            <h2>О проекте</h2>
+            <p class="section-subtitle">
+                Кинотавр — это инновационный Telegram бот, который помогает пользователям находить идеальный фильм
+                для просмотра, основываясь на их текущем настроении и предпочтениях. Бот использует интеллектуальный
+                диалоговый интерфейс для уточнения предпочтений и предлагает персонализированные рекомендации.
+            </p>
+        </div>
+    </section>
+
+    <!-- Ключевые возможности -->
+    <section>
+        <div class="container">
+            <h2>Ключевые возможности</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Подбор по настроению</h3>
+                    <p>Интеллектуальная система анализа настроения пользователя через естественный диалог для точного подбора фильма</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Умный диалог</h3>
+                    <p>Бот задает уточняющие вопросы, чтобы лучше понять ваши предпочтения и найти идеальное совпадение</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mini App интерфейс</h3>
+                    <p>Современное веб-приложение с дизайном в стиле Telegram для удобного взаимодействия</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Динамический дизайн</h3>
+                    <p>Градиентный фон меняется в зависимости от настроения, создавая уникальную атмосферу</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📜</div>
+                    <h3>История просмотров</h3>
+                    <p>Все рекомендованные фильмы сохраняются в истории для быстрого доступа</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Сброс диалога</h3>
+                    <p>Возможность начать новый поиск в любой момент одним нажатием кнопки</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Прямые ссылки</h3>
+                    <p>Быстрый переход на Кинопоиск и Rutube для просмотра выбранного фильма</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Быстрый отклик</h3>
+                    <p>Моментальные ответы и плавные анимации для комфортного использования</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Кросс-платформенность</h3>
+                    <p>Работает на всех устройствах: смартфоны, планшеты, десктопы</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Интерфейс приложения -->
+    <section>
+        <div class="container">
+            <h2>Интерфейс приложения</h2>
+            <p class="section-subtitle">
+                Современный и интуитивно понятный дизайн в стиле Telegram с продуманным UX
+            </p>
+            <div class="screenshots">
+                <div class="screenshot-card">
+                    <div class="screenshot-mockup">
+                        <div class="mockup-content">
+                            <div class="mockup-header">Кинотавр</div>
+                            <div class="mockup-body">
+                                <div style="text-align: center; padding: 40px 0;">
+                                    <div style="font-size: 48px; margin-bottom: 15px;">🎬</div>
+                                    <div style="font-weight: 600; margin-bottom: 8px;">Привет! Я Кинотавр</div>
+                                    <div style="font-size: 13px; color: #666;">Расскажи о своём настроении</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Начальный экран</h3>
+                    <p>Приветственное сообщение с логотипом и призывом к действию</p>
+                </div>
+
+                <div class="screenshot-card">
+                    <div class="screenshot-mockup">
+                        <div class="mockup-content">
+                            <div class="mockup-header">Кинотавр</div>
+                            <div class="mockup-body">
+                                <div class="mock-message bot">Какое у тебя настроение?</div>
+                                <div class="mock-message user">Хочу что-то весёлое</div>
+                                <div class="mock-message bot">Отлично! Может комедию?</div>
+                                <div class="mock-message user">Да, комедию!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Диалог с ботом</h3>
+                    <p>Естественное общение для уточнения предпочтений</p>
+                </div>
+
+                <div class="screenshot-card">
+                    <div class="screenshot-mockup">
+                        <div class="mockup-content">
+                            <div class="mockup-header">История фильмов</div>
+                            <div class="mockup-body" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px;">
+                                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin-bottom: 10px; color: white;">
+                                    <div style="font-weight: 600; margin-bottom: 5px;">Название фильма (2024)</div>
+                                    <div style="font-size: 12px; opacity: 0.9;">Описание фильма...</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; color: white;">
+                                    <div style="font-weight: 600; margin-bottom: 5px;">Другой фильм (2023)</div>
+                                    <div style="font-size: 12px; opacity: 0.9;">Описание фильма...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>История просмотров</h3>
+                    <p>Все рекомендации сохраняются для быстрого доступа</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Технологии -->
+    <section>
+        <div class="container">
+            <h2>Технологический стек</h2>
+            <p class="section-subtitle">
+                Современные технологии для создания быстрого и надёжного решения
+            </p>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>Python 3.x</strong>
+                    <span>Backend</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Aiogram 3</strong>
+                    <span>Telegram Bot</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Aiohttp</strong>
+                    <span>Web Server</span>
+                </div>
+                <div class="tech-item">
+                    <strong>HTML5/CSS3</strong>
+                    <span>Frontend</span>
+                </div>
+                <div class="tech-item">
+                    <strong>JavaScript</strong>
+                    <span>Client Logic</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Telegram WebApp SDK</strong>
+                    <span>Mini App</span>
+                </div>
+                <div class="tech-item">
+                    <strong>LocalStorage</strong>
+                    <span>History</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Git/GitHub</strong>
+                    <span>Version Control</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <section>
+        <div class="container">
+            <h2>Проект в цифрах</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Варианта логотипа</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Ключевых функций</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Адаптивный дизайн</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">Фильмов в истории</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Варианты логотипов -->
+    <section>
+        <div class="container">
+            <h2>Дизайн логотипов</h2>
+            <p class="section-subtitle">
+                Три уникальных варианта дизайна на выбор
+            </p>
+            <div class="logo-variants">
+                <div class="logo-card">
+                    <img src="miniapp/static/logo-minimalistic.svg" alt="Минималистичный" class="logo-preview">
+                    <h3>Минималистичный</h3>
+                    <p>Чистый и современный дизайн с фокусом на простоте</p>
+                </div>
+                <div class="logo-card">
+                    <img src="miniapp/static/logo.svg" alt="Красочный" class="logo-preview">
+                    <h3>Красочный</h3>
+                    <p>Яркий и энергичный дизайн с множеством деталей</p>
+                </div>
+                <div class="logo-card">
+                    <img src="miniapp/static/logo-telegram-style.svg" alt="Telegram стиль" class="logo-preview">
+                    <h3>В стиле Telegram</h3>
+                    <p>Официальный стиль как у других Telegram ботов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Архитектура -->
+    <section>
+        <div class="container">
+            <h2>Архитектура проекта</h2>
+            <p class="section-subtitle">
+                Продуманная структура для масштабируемости и поддержки
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Telegram Bot</h3>
+                    <p>Aiogram 3 для обработки сообщений, команд и взаимодействия с пользователями</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Web Server</h3>
+                    <p>Aiohttp для обслуживания Mini App и статических файлов</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Backend API</h3>
+                    <p>Интеграция с FastAPI сервисом для обработки диалогов и рекомендаций</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Хранение данных</h3>
+                    <p>Session-based хранилище для диалогов, LocalStorage для истории клиента</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Frontend</h3>
+                    <p>Vanilla JavaScript с Telegram WebApp SDK для нативной интеграции</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Deployment</h3>
+                    <p>Готов к развертыванию на любом хостинге с поддержкой Python</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Особенности UX -->
+    <section>
+        <div class="container">
+            <h2>Продуманный UX</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Плавные анимации</h3>
+                    <p>Все переходы и появления элементов анимированы для приятного восприятия</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Typing indicator</h3>
+                    <p>Индикатор набора текста показывает, что бот обрабатывает запрос</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Адаптивная вёрстка</h3>
+                    <p>Интерфейс оптимизирован для всех размеров экранов</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Быстрый доступ</h3>
+                    <p>История и сброс диалога всегда под рукой в шапке приложения</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Визуальная обратная связь</h3>
+                    <p>Все действия сопровождаются визуальными эффектами и уведомлениями</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Тёмная тема</h3>
+                    <p>Автоматическая адаптация под тему Telegram пользователя</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div class="cta">
+        <div class="container">
+            <h2>Готовы попробовать?</h2>
+            <p class="section-subtitle" style="color: white; opacity: 0.95;">
+                Запустите бота в Telegram и найдите свой идеальный фильм уже сегодня!
+            </p>
+            <div class="cta-buttons">
+                <a href="https://t.me/ProjectHaterBot" class="btn btn-primary">Открыть в Telegram</a>
+                <a href="https://github.com/vizintini07/tgBot" class="btn btn-secondary">Посмотреть на GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Кинотавр © 2026. Создано с ❤️ для любителей кино.</p>
+            <p style="margin-top: 10px; font-size: 14px;">Технологии: Python · Aiogram · Telegram Mini Apps · HTML/CSS/JS</p>
+        </div>
+    </footer>
+</body>
+</html>
