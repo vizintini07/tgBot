@@ -59,3 +59,36 @@ async def cmd_start(message: Message):
     user_sessions[user_id]["last_question"] = welcome_text
     await message.answer(welcome_text)
 
+@dp.message()
+async def process_user_message(message: Message):
+    """Обработчик всех текстовых сообщений пользователя"""
+    user_id = message.from_user.id
+    user_text = message.text
+
+    # Инициализируем сессию, если вдруг ее нет
+    if user_id not in user_sessions:
+        user_sessions[user_id] = {"history": [], "last_question": ""}
+
+    session = user_sessions[user_id]
+
+    # Формируем пару "предыдущий вопрос бота - текущий ответ юзера"
+    message_pair = {
+        "question": session["last_question"],
+        "answer": user_text
+    }
+
+    # Добавляем в историю
+    session["history"].append(message_pair)
+
+    # Чтобы контекст не разрастался бесконечно, можно ограничить историю (например, 5 последних пар)
+    # if len(session["history"]) > 5:
+    #   session["history"].pop(0)
+
+    # Отправляем "typing..." пока ждем ответ от ИИ
+    await bot.send_chat_action(chat_id=user_id, action="typing")
+
+    # Получаем ответ от бэкенда
+    backend_response = await send_to_backend(user_id, session["history"])
+
+    action = backend_response.get("action")
+    response_text = backend_response.get("text", "Извини, я немного задумался. Повторишь?")
