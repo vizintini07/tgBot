@@ -1,0 +1,109 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="1280" height="640" fill="url(#mainGradient)"/>
+
+  <!-- Decorative elements -->
+  <circle cx="100" cy="100" r="60" fill="#FF6B6B" opacity="0.2"/>
+  <circle cx="1180" cy="120" r="80" fill="#4ECDC4" opacity="0.2"/>
+  <circle cx="120" cy="520" r="50" fill="#FFE66D" opacity="0.2"/>
+  <circle cx="1150" cy="540" r="70" fill="#95E1D3" opacity="0.2"/>
+
+  <!-- Large decorative circles background -->
+  <circle cx="200" cy="320" r="150" fill="white" opacity="0.05"/>
+  <circle cx="1080" cy="320" r="180" fill="white" opacity="0.05"/>
+
+  <!-- Left side - Logo and branding -->
+  <g transform="translate(200, 320)">
+    <!-- Logo circle -->
+    <circle cx="0" cy="0" r="120" fill="white" opacity="0.95"/>
+
+    <!-- Film reel -->
+    <circle cx="0" cy="0" r="95" fill="url(#logoGradient)"/>
+    <circle cx="0" cy="0" r="75" fill="white"/>
+    <circle cx="0" cy="0" r="60" fill="url(#logoCenter)"/>
+
+    <!-- Decorative holes -->
+    <circle cx="0" cy="-75" r="12" fill="#FF6B6B"/>
+    <circle cx="53" cy="-53" r="12" fill="#4ECDC4"/>
+    <circle cx="75" cy="0" r="12" fill="#FFE66D"/>
+    <circle cx="53" cy="53" r="12" fill="#95E1D3"/>
+    <circle cx="0" cy="75" r="12" fill="#A8E6CF"/>
+    <circle cx="-53" cy="53" r="12" fill="#FF8B94"/>
+    <circle cx="-75" cy="0" r="12" fill="#C7CEEA"/>
+    <circle cx="-53" cy="-53" r="12" fill="#FFDAC1"/>
+
+    <!-- Play button -->
+    <circle cx="0" cy="0" r="40" fill="url(#playGrad)"/>
+    <path d="M-10 -20 L-10 20 L25 0 Z" fill="white"/>
+  </g>
+
+  <!-- Right side - Text content -->
+  <text x="450" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="bold" fill="white">
+    Кинотавр
+  </text>
+
+  <text x="450" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="white" opacity="0.9">
+    Твой личный кино-советник
+  </text>
+
+  <!-- Features icons and text -->
+  <g transform="translate(450, 320)">
+    <!-- Feature 1 -->
+    <circle cx="20" cy="0" r="20" fill="white" opacity="0.2"/>
+    <text x="20" y="8" font-size="24" text-anchor="middle" fill="white">🎭</text>
+    <text x="60" y="8" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="white" opacity="0.95">
+      Подбор по настроению
+    </text>
+
+    <!-- Feature 2 -->
+    <circle cx="20" cy="60" r="20" fill="white" opacity="0.2"/>
+    <text x="20" y="68" font-size="24" text-anchor="middle" fill="white">💡</text>
+    <text x="60" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="white" opacity="0.95">
+      Умные рекомендации
+    </text>
+
+    <!-- Feature 3 -->
+    <circle cx="20" cy="120" r="20" fill="white" opacity="0.2"/>
+    <text x="20" y="128" font-size="24" text-anchor="middle" fill="white">📱</text>
+    <text x="60" y="128" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="white" opacity="0.95">
+      Удобный Mini App
+    </text>
+  </g>
+
+  <!-- Bottom decoration - film strip -->
+  <rect x="450" y="520" width="700" height="60" rx="12" fill="white" opacity="0.15"/>
+  <rect x="470" y="535" width="15" height="30" rx="4" fill="#FF6B6B" opacity="0.6"/>
+  <rect x="510" y="535" width="15" height="30" rx="4" fill="#4ECDC4" opacity="0.6"/>
+  <rect x="550" y="535" width="15" height="30" rx="4" fill="#FFE66D" opacity="0.6"/>
+  <rect x="590" y="535" width="15" height="30" rx="4" fill="#95E1D3" opacity="0.6"/>
+  <rect x="630" y="535" width="15" height="30" rx="4" fill="#A8E6CF" opacity="0.6"/>
+  <rect x="670" y="535" width="15" height="30" rx="4" fill="#FF8B94" opacity="0.6"/>
+  <rect x="710" y="535" width="15" height="30" rx="4" fill="#C7CEEA" opacity="0.6"/>
+  <rect x="750" y="535" width="15" height="30" rx="4" fill="#FFDAC1" opacity="0.6"/>
+
+  <!-- Sparkles -->
+  <path d="M400 150 L407 165 L422 158 L415 173 L430 180 L415 187 L407 202 L400 187 L385 180 L400 173 L393 158 Z" fill="white" opacity="0.6"/>
+  <path d="M1100 200 L1105 210 L1115 205 L1110 215 L1120 220 L1110 225 L1105 235 L1100 225 L1090 220 L1100 215 L1095 205 Z" fill="white" opacity="0.6"/>
+  <path d="M1150 450 L1154 457 L1161 453 L1157 460 L1164 464 L1157 468 L1154 475 L1150 468 L1143 464 L1150 460 L1146 453 Z" fill="white" opacity="0.5"/>
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD89B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#19547B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoCenter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8E2DE2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A00E0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="playGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8E53;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
