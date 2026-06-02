@@ -169,19 +169,33 @@ async def serve_static(request):
     if not os.path.exists(filepath):
         return web.Response(status=404, text='File not found')
 
-    with open(filepath, 'r', encoding='utf-8') as f:
-        content = f.read()
-
     # Determine content type
     content_type = 'text/plain'
     if filename.endswith('.css'):
         content_type = 'text/css'
     elif filename.endswith('.js'):
         content_type = 'application/javascript'
-        # Replace API_URL placeholder in JavaScript
-        content = content.replace('API_URL_PLACEHOLDER', API_URL)
+    elif filename.endswith('.svg'):
+        content_type = 'image/svg+xml'
+    elif filename.endswith('.png'):
+        content_type = 'image/png'
+    elif filename.endswith('.jpg') or filename.endswith('.jpeg'):
+        content_type = 'image/jpeg'
 
-    return web.Response(text=content, content_type=content_type)
+    # Read binary for images, text for others
+    if filename.endswith(('.png', '.jpg', '.jpeg')):
+        with open(filepath, 'rb') as f:
+            content = f.read()
+        return web.Response(body=content, content_type=content_type)
+    else:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Replace API_URL placeholder in JavaScript
+        if filename.endswith('.js'):
+            content = content.replace('API_URL_PLACEHOLDER', API_URL)
+
+        return web.Response(text=content, content_type=content_type)
 
 
 async def init_webapp():
