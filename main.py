@@ -92,3 +92,12 @@ async def process_user_message(message: Message):
 
     action = backend_response.get("action")
     response_text = backend_response.get("text", "Извини, я немного задумался. Повторишь?")
+
+    if action == "ask":
+        # Бот задает уточняющий вопрос. Обновляем last_question
+        session["last_question"] = response_text
+        await message.answer(response_text)
+
+    elif action == "recommend":
+        # ИИ определил настроение и выдал рекомендацию
+        movie_data = backend_response.get("movie")
