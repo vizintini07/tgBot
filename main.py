@@ -101,3 +101,38 @@ async def process_user_message(message: Message):
     elif action == "recommend":
         # ИИ определил настроение и выдал рекомендацию
         movie_data = backend_response.get("movie")
+
+        if movie_data:
+            # Парсим данные фильма (ключи зависят от структуры таблицы movies коллеги)
+            title = movie_data.get("title", "Неизвестный фильм")
+            description = movie_data.get("description", "Описание отсутствует.")
+            year = movie_data.get("release_year", "")
+
+            final_message = (
+                f"{response_text}\n\n"
+                f"🍿 <b>{title}</b> {f'({year})' if year else ''}\n"
+                f"📝 {description}"
+            )
+            await message.answer(final_message, parse_mode="HTML")
+
+            # Сбрасываем историю после успешной рекомендации
+            user_sessions[user_id] = {"history": [], "last_question": ""}
+        else:
+            await message.answer(
+                f"{response_text}\n\nК сожалению, в базе пока нет подходящего фильма для этого настроения 😔")
+            # Сбрасываем историю
+            user_sessions[user_id] = {"history": [], "last_question": ""}
+
+    else:
+        # Обработка ошибок
+        await message.answer(response_text)
+
+
+async def main():
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting Telegram Bot...")
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
