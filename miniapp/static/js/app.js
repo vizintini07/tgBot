@@ -8,6 +8,7 @@ let userHistory = [];
 let conversationHistory = [];
 let lastQuestion = '';
 let currentGradient = { start: '#2481cc', end: '#1a5a8a' };
+let lastColor = null;
 
 // DOM elements
 const chatContainer = document.getElementById('chatContainer');
@@ -120,9 +121,10 @@ async function sendMessage() {
 function handleBackendResponse(data) {
     const { action, text, movie, color } = data;
 
-    // Update gradient if color is provided
+    // Update gradient if color is provided (for both ask and recommend actions)
     if (color) {
         updateGradient(color);
+        lastColor = color;
     }
 
     if (action === 'ask') {
@@ -136,7 +138,7 @@ function handleBackendResponse(data) {
 
         if (movie) {
             addMovieCard(movie);
-            saveToHistory(movie);
+            saveToHistory(movie, color);
         }
 
         // Reset conversation after recommendation
@@ -262,9 +264,10 @@ function darkenColor(color, percent) {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-function saveToHistory(movie) {
+function saveToHistory(movie, color) {
     userHistory.unshift({
         ...movie,
+        color: color || lastColor,
         timestamp: Date.now()
     });
 
@@ -289,6 +292,14 @@ function loadHistory() {
 
 function showHistory() {
     historyView.classList.add('active');
+
+    // Apply gradient from the last movie in history
+    if (userHistory.length > 0 && userHistory[0].color) {
+        const historyColor = userHistory[0].color;
+        const historyGradientEnd = darkenColor(historyColor, 20);
+        historyView.style.background = `linear-gradient(135deg, ${historyColor} 0%, ${historyGradientEnd} 100%)`;
+    }
+
     renderHistory();
 }
 
