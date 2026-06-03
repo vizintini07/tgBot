@@ -24,6 +24,16 @@ const historyView = document.getElementById('historyView');
 // API URL from environment or default
 const API_URL = 'API_URL_PLACEHOLDER';
 
+// Color mapping from backend color names to hex codes
+const COLOR_MAP = {
+    'deep_blue': '#1e3a8a',
+    'yellow': '#fbbf24',
+    'crimson': '#dc2626',
+    'black': '#1a1a1a',
+    'purple': '#9333ea',
+    'emerald': '#059669'
+};
+
 // Initialize
 init();
 
@@ -238,9 +248,18 @@ function scrollToBottom() {
 }
 
 function updateGradient(color) {
+    // Convert color name to hex if needed
+    const hexColor = COLOR_MAP[color] || color;
+
+    // Validate hex format
+    if (!/^#[0-9A-Fa-f]{6}$/.test(hexColor)) {
+        console.warn('Invalid color format:', color, hexColor);
+        return;
+    }
+
     // Parse color and create gradient
-    const startColor = color;
-    const endColor = darkenColor(color, 20);
+    const startColor = hexColor;
+    const endColor = darkenColor(hexColor, 20);
 
     currentGradient = { start: startColor, end: endColor };
 
@@ -295,9 +314,14 @@ function showHistory() {
 
     // Apply gradient from the last movie in history
     if (userHistory.length > 0 && userHistory[0].color) {
-        const historyColor = userHistory[0].color;
-        const historyGradientEnd = darkenColor(historyColor, 20);
-        historyView.style.background = `linear-gradient(135deg, ${historyColor} 0%, ${historyGradientEnd} 100%)`;
+        const colorName = userHistory[0].color;
+        const historyColor = COLOR_MAP[colorName] || colorName;
+
+        // Validate hex format before applying
+        if (/^#[0-9A-Fa-f]{6}$/.test(historyColor)) {
+            const historyGradientEnd = darkenColor(historyColor, 20);
+            historyView.style.background = `linear-gradient(135deg, ${historyColor} 0%, ${historyGradientEnd} 100%)`;
+        }
     }
 
     renderHistory();
