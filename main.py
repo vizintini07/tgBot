@@ -378,10 +378,7 @@ async def process_user_message(message: Message):
             # Создаем inline кнопки
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [
-                    InlineKeyboardButton(text="🎲 Еще фильм", callback_data=f"more_{backend_response.get('color', 'random')}"),
-                    InlineKeyboardButton(text="🔄 Начать заново", callback_data="restart")
-                ],
-                [
+                    InlineKeyboardButton(text="🔄 Начать заново", callback_data="restart"),
                     InlineKeyboardButton(text="🎬 Открыть Mini App", web_app=WebAppInfo(url=WEBAPP_URL))
                 ]
             ])
@@ -406,71 +403,6 @@ async def process_user_message(message: Message):
 
 
 # Обработчики callback-кнопок
-@dp.callback_query(F.data.startswith("more_"))
-async def callback_more_movie(callback: CallbackQuery):
-    """Обработчик кнопки 'Еще фильм'"""
-    await callback.answer()
-
-    user_id = callback.from_user.id
-    color = callback.data.split("_", 1)[1]
-
-    await bot.send_chat_action(chat_id=user_id, action="typing")
-
-    # Формируем запрос напрямую к бэкенду для получения фильма того же цвета
-    backend_response = await send_to_backend(user_id, [
-        {"question": "", "answer": f"Еще фильм с настроением {color}"}
-    ])
-
-    # Создаем фейковый ответ с рекомендацией
-    backend_response["action"] = "recommend"
-    backend_response["color"] = color
-
-    movie_data = backend_response.get("movie")
-
-    if movie_data:
-        # Сохраняем фильм в историю
-        if user_id not in user_sessions:
-            user_sessions[user_id] = {"history": [], "last_question": "", "movies": []}
-        user_sessions[user_id]["movies"].append(movie_data)
-
-        title = movie_data.get("title", "Неизвестный фильм")
-        description = movie_data.get("description", "Описание отсутствует.")
-        year = movie_data.get("year", "")
-        kp_url = movie_data.get("kp_url", "")
-        rutube_url = movie_data.get("rutube_url", "")
-
-        final_message = f"🎲 <b>Вот еще один вариант!</b>\n\n"
-        final_message += f"🍿 <b>{title}</b> {f'({year})' if year else ''}\n"
-        final_message += f"📝 {description}\n\n"
-
-        links = []
-        if kp_url:
-            links.append(f'<a href="{kp_url}">Кинопоиск</a>')
-        if rutube_url:
-            links.append(f'<a href="{rutube_url}">Смотреть на Rutube</a>')
-
-        if links:
-            final_message += "🔗 " + " | ".join(links)
-
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [
-                InlineKeyboardButton(text="🎲 Еще фильм", callback_data=f"more_{color}"),
-                InlineKeyboardButton(text="🔄 Начать заново", callback_data="restart")
-            ],
-            [
-                InlineKeyboardButton(text="🎬 Открыть Mini App", web_app=WebAppInfo(url=WEBAPP_URL))
-            ]
-        ])
-
-        await callback.message.answer(final_message, parse_mode="HTML", reply_markup=keyboard, disable_web_page_preview=False)
-    else:
-        await callback.message.answer(
-            "😔 К сожалению, больше нет фильмов с таким настроением в базе.\n\n"
-            "Попробуйте начать новый диалог /start",
-            parse_mode="HTML"
-        )
-
-
 @dp.callback_query(F.data == "restart")
 async def callback_restart(callback: CallbackQuery):
     """Обработчик кнопки 'Начать заново'"""
