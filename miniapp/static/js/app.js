@@ -9,6 +9,8 @@ let conversationHistory = [];
 let lastQuestion = '';
 let currentGradient = { start: '#2481cc', end: '#1a5a8a' };
 let lastColor = null;
+let favoriteMovies = [];
+let isLoadingMore = false;
 
 // DOM elements
 const chatContainer = document.getElementById('chatContainer');
@@ -20,6 +22,8 @@ const resetBtn = document.getElementById('resetBtn');
 const backBtn = document.getElementById('backBtn');
 const chatView = document.getElementById('chatView');
 const historyView = document.getElementById('historyView');
+
+let currentHistoryTab = 'all';
 
 // API URL from environment or default
 const API_URL = 'API_URL_PLACEHOLDER';
@@ -39,6 +43,8 @@ init();
 
 function init() {
     loadHistory();
+    loadConversation();
+    loadFavorites();
     setupEventListeners();
     applyTelegramTheme();
 
@@ -56,6 +62,22 @@ function setupEventListeners() {
     historyBtn.addEventListener('click', showHistory);
     backBtn.addEventListener('click', hideHistory);
     resetBtn.addEventListener('click', resetDialog);
+
+    // History tabs
+    document.querySelectorAll('.history-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            try {
+                tg.HapticFeedback.impactOccurred('light');
+            } catch (e) {
+                console.log('Haptic feedback not available');
+            }
+
+            document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentHistoryTab = tab.dataset.tab;
+            renderHistory();
+        });
+    });
 }
 
 function handleInputChange() {
@@ -65,6 +87,19 @@ function handleInputChange() {
     // Auto-resize textarea
     messageInput.style.height = 'auto';
     messageInput.style.height = messageInput.scrollHeight + 'px';
+}
+
+// Debounce function for optimization
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 function handleKeyDown(e) {
@@ -79,6 +114,13 @@ function handleKeyDown(e) {
 async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text) return;
+
+    // Haptic feedback on send
+    try {
+        tg.HapticFeedback.impactOccurred('light');
+    } catch (e) {
+        console.log('Haptic feedback not available');
+    }
 
     // Remove welcome message if it exists
     document.querySelector('.welcome-message')?.remove();
@@ -97,7 +139,10 @@ async function sendMessage() {
         answer: text
     });
 
-    // Show typing indicator
+    // Save conversation to localStorage
+    saveConversation();
+
+    // Show typing indicator (replaced with skeleton on movie response)
     const typingIndicator = addTypingIndicator();
 
     // Send to backend
@@ -143,6 +188,13 @@ function handleBackendResponse(data) {
         lastQuestion = text;
 
     } else if (action === 'recommend') {
+        // Haptic feedback for success
+        try {
+            tg.HapticFeedback.notificationOccurred('success');
+        } catch (e) {
+            console.log('Haptic feedback not available');
+        }
+
         // Bot recommends a movie
         addMessage(text, 'bot');
 
@@ -155,6 +207,7 @@ function handleBackendResponse(data) {
         setTimeout(() => {
             conversationHistory = [];
             lastQuestion = '';
+            saveConversation();
         }, 1000);
 
     } else {
@@ -204,7 +257,19 @@ function addMovieCard(movie) {
         movieCard.appendChild(descEl);
     }
 
-    // Add links
+    // Add links and favorite button
+    const actionsEl = document.createElement('div');
+    actionsEl.className = 'movie-actions';
+
+    // Favorite button
+    const isFavorite = favoriteMovies.some(fav => fav.id === movie.id || fav.title === movie.title);
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.className = `favorite-btn ${isFavorite ? 'active' : ''}`;
+    favoriteBtn.innerHTML = isFavorite ? '⭐' : '☆';
+    favoriteBtn.onclick = () => toggleFavorite(movie, favoriteBtn);
+    actionsEl.appendChild(favoriteBtn);
+
+    // Links
     const links = [];
     if (movie.kp_url) {
         links.push(`<a href="${movie.kp_url}" class="movie-link" target="_blank">Кинопоиск</a>`);
@@ -217,8 +282,10 @@ function addMovieCard(movie) {
         const linksEl = document.createElement('div');
         linksEl.className = 'movie-links';
         linksEl.innerHTML = links.join('');
-        movieCard.appendChild(linksEl);
+        actionsEl.appendChild(linksEl);
     }
+
+    movieCard.appendChild(actionsEl);
 
     cardEl.appendChild(movieCard);
     chatContainer.appendChild(cardEl);
@@ -241,6 +308,28 @@ function addTypingIndicator() {
     scrollToBottom();
 
     return typingEl;
+}
+
+function addSkeletonLoader() {
+    const skeletonEl = document.createElement('div');
+    skeletonEl.className = 'message bot';
+    skeletonEl.id = 'skeletonLoader';
+
+    const skeleton = document.createElement('div');
+    skeleton.className = 'movie-card skeleton';
+    skeleton.innerHTML = `
+        <div class="skeleton-title"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+    `;
+
+    skeletonEl.appendChild(skeleton);
+    chatContainer.appendChild(skeletonEl);
+
+    scrollToBottom();
+
+    return skeletonEl;
 }
 
 function scrollToBottom() {
@@ -309,6 +398,101 @@ function loadHistory() {
     }
 }
 
+function loadConversation() {
+    try {
+        const saved = localStorage.getItem('conversationHistory');
+        if (saved) {
+            const data = JSON.parse(saved);
+            conversationHistory = data.history || [];
+            lastQuestion = data.lastQuestion || '';
+        }
+    } catch (e) {
+        console.error('Error loading conversation:', e);
+    }
+}
+
+function saveConversation() {
+    try {
+        localStorage.setItem('conversationHistory', JSON.stringify({
+            history: conversationHistory,
+            lastQuestion: lastQuestion
+        }));
+    } catch (e) {
+        console.error('Error saving conversation:', e);
+    }
+}
+
+function loadFavorites() {
+    try {
+        const saved = localStorage.getItem('favoriteMovies');
+        if (saved) {
+            favoriteMovies = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Error loading favorites:', e);
+    }
+}
+
+function saveFavorites() {
+    try {
+        localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies));
+    } catch (e) {
+        console.error('Error saving favorites:', e);
+    }
+}
+
+function toggleFavorite(movie, button) {
+    try {
+        tg.HapticFeedback.impactOccurred('medium');
+    } catch (e) {
+        console.log('Haptic feedback not available');
+    }
+
+    const index = favoriteMovies.findIndex(fav => fav.id === movie.id || fav.title === movie.title);
+
+    if (index > -1) {
+        // Remove from favorites
+        favoriteMovies.splice(index, 1);
+        button.classList.remove('active');
+        button.innerHTML = '☆';
+    } else {
+        // Add to favorites
+        favoriteMovies.push({
+            ...movie,
+            favoritedAt: Date.now()
+        });
+        button.classList.add('active');
+        button.innerHTML = '⭐';
+    }
+
+    saveFavorites();
+
+    // Update all favorite buttons for this movie
+    updateAllFavoriteButtons(movie);
+}
+
+function updateAllFavoriteButtons(movie) {
+    const isFavorite = favoriteMovies.some(fav => fav.id === movie.id || fav.title === movie.title);
+    const icon = isFavorite ? '⭐' : '☆';
+
+    // Update buttons in history
+    document.querySelectorAll('.favorite-btn-small').forEach(btn => {
+        try {
+            const btnMovie = JSON.parse(btn.dataset.movie);
+            if (btnMovie.id === movie.id || btnMovie.title === movie.title) {
+                btn.innerHTML = icon;
+                if (isFavorite) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            }
+        } catch (e) {
+            // Skip if can't parse
+        }
+    });
+}
+
 function showHistory() {
     historyView.classList.add('active');
 
@@ -332,12 +516,20 @@ function hideHistory() {
 }
 
 function renderHistory() {
-    if (userHistory.length === 0) {
+    const moviesToShow = currentHistoryTab === 'favorites' ? favoriteMovies : userHistory;
+
+    if (moviesToShow.length === 0) {
+        const emptyIcon = currentHistoryTab === 'favorites' ? '⭐' : '📽️';
+        const emptyText = currentHistoryTab === 'favorites' ? 'Избранное пусто' : 'История пока пуста';
+        const emptyHint = currentHistoryTab === 'favorites'
+            ? 'Добавляйте фильмы в избранное нажав на звездочку'
+            : 'Найденные фильмы будут отображаться здесь';
+
         historyContainer.innerHTML = `
             <div class="empty-history">
-                <div class="empty-icon">📽️</div>
-                <p>История пока пуста</p>
-                <span>Найденные фильмы будут отображаться здесь</span>
+                <div class="empty-icon">${emptyIcon}</div>
+                <p>${emptyText}</p>
+                <span>${emptyHint}</span>
             </div>
         `;
         return;
@@ -345,15 +537,35 @@ function renderHistory() {
 
     historyContainer.innerHTML = '';
 
-    userHistory.forEach(movie => {
+    moviesToShow.forEach(movie => {
         const itemEl = document.createElement('div');
         itemEl.className = 'history-item';
 
+        const isFavorite = favoriteMovies.some(fav => fav.id === movie.id || fav.title === movie.title);
+
         itemEl.innerHTML = `
-            <div class="history-item-title">${movie.title}</div>
+            <div class="history-item-header">
+                <div class="history-item-title">${movie.title}</div>
+                <button class="favorite-btn-small ${isFavorite ? 'active' : ''}" data-movie='${JSON.stringify(movie).replace(/'/g, "&apos;")}'>
+                    ${isFavorite ? '⭐' : '☆'}
+                </button>
+            </div>
             ${movie.year ? `<div class="history-item-year">${movie.year}</div>` : ''}
             ${movie.description ? `<div class="history-item-description">${movie.description}</div>` : ''}
         `;
+
+        // Add favorite button handler
+        const favBtn = itemEl.querySelector('.favorite-btn-small');
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const movieData = JSON.parse(favBtn.dataset.movie);
+            toggleFavorite(movieData, favBtn);
+
+            // If we're on favorites tab and removing, re-render
+            if (currentHistoryTab === 'favorites') {
+                renderHistory();
+            }
+        });
 
         itemEl.addEventListener('click', () => {
             const links = [];
@@ -374,6 +586,8 @@ function resetDialog() {
         if (confirmed) {
             conversationHistory = [];
             lastQuestion = '';
+            saveConversation();
+
             chatContainer.innerHTML = `
                 <div class="welcome-message">
                     <img src="/static/logo.svg" alt="Кинотавр" class="bot-logo">
@@ -384,6 +598,12 @@ function resetDialog() {
 
             // Reset gradient to default
             updateGradient('#2481cc');
+
+            try {
+                tg.HapticFeedback.notificationOccurred('success');
+            } catch (e) {
+                console.log('Haptic feedback not available');
+            }
 
             tg.showPopup({
                 message: 'Диалог сброшен. Можете начать заново!'
